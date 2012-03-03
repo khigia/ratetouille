@@ -1,0 +1,82 @@
+\<!doctype html>
+\<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+\<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+\<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+\<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+
+        <title>#{pageTitle pc}
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <link href="static/css/bootstrap.css" rel="stylesheet">
+        <style>
+            body {
+              padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        <link href="static/css/bootstrap-responsive.css" rel="stylesheet">
+        ^{pageHead pc}
+
+        \<!--[if lt IE 9]>
+        \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        \<![endif]-->
+
+        <script>
+          document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar">
+                        <span class="icon-bar">
+                        <span class="icon-bar">
+                    <a class="brand" href="#">Project name
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="#">Home
+                            <li>
+                                <a href="#about">About
+                            <li>
+                                <a href="#contact">Contact
+
+        <div class="container">
+            <h1>Bootstrap starter template
+            <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.
+            <header>
+            ^{pageBody pc}
+            <footer>
+
+
+        $maybe analytics <- extraAnalytics $ appExtra $ settings master
+            <script>
+                window._gaq = [['_setAccount','#{analytics}'],['_trackPageview'],['_trackPageLoadTime']];
+                YepNope.load({
+                \  load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+                });
+        \<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.  chromium.org/developers/how-tos/chrome-frame-getting-started -->
+        \<!--[if lt IE 7 ]>
+            <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js">
+            <script>
+                window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})
+        \<![endif]-->
+        
+        \<!-- Placed at the end of the document so the pages load faster -->
+        <script src="static/js/jquery.js">
+        <script src="static/js/bootstrap-transition.js">
+        <script src="static/js/bootstrap-alert.js">
+        <script src="static/js/bootstrap-modal.js">
+        <script src="static/js/bootstrap-dropdown.js">
+        <script src="static/js/bootstrap-scrollspy.js">
+        <script src="static/js/bootstrap-tab.js">
+        <script src="static/js/bootstrap-tooltip.js">
+        <script src="static/js/bootstrap-popover.js">
+        <script src="static/js/bootstrap-button.js">
+        <script src="static/js/bootstrap-collapse.js">
+        <script src="static/js/bootstrap-carousel.js">
+        <script src="static/js/bootstrap-typeahead.js">

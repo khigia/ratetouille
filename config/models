@@ -9,6 +9,7 @@ Email
     user UserId Maybe
     verkey Text Maybe
     UniqueEmail email
-
 Collection
     name Text
+    stupid Text default=""
+    UniqueCollection name

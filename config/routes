@@ -5,4 +5,5 @@
 /robots.txt RobotsR GET
 
 / RootR GET
-/collections CollectionR GET
+/collections CollectionsR GET POST
+/collection/#CollectionId CollectionR GET

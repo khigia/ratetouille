@@ -1,2 +1,14 @@
-<h1>_{MsgHello}
+<h1>Create a new collection
+<form method=post enctype=#{enctype}>
+    ^{collectionWidget}
+    <div>
+        <input type=submit value="Create collection">
 
+<h1>Collections
+$if null collections
+    <p>No collection found.
+$else
+    <ul>
+        $forall Entity collectionId collection <- collections
+            <li>
+                <a href=@{CollectionR collectionId}>#{collectionName collection}

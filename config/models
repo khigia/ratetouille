@@ -12,4 +12,6 @@ Email
 Collection
     name Text
     stupid Text default=""
-    UniqueCollection name
+Entry
+    collectionId CollectionId
+    text Text

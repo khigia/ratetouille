@@ -11,4 +11,4 @@ $else
     <ul>
         $forall Entity collectionId collection <- collections
             <li>
-                <a href=@{CollectionR collectionId}>#{collectionName collection}
+                <a href=@{CollectionItemR collectionId}>#{collectionName collection}

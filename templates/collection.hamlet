@@ -1,4 +1,11 @@
-<h1>Collection:
+<h1>Collection: #{collectionName collection}
+<h2>Add a new entry
+<form method=post enctype=#{enctype}>
+    ^{entryWidget}
+    <div>
+        <input type=submit value="Create entry">
+<h2>Existing entries
 <ul>
-    <li>#{collectionName collection}
-    <li>#{collectionStupid collection}
+    $forall Entity entryId entry <- entries
+        <li>#{entryText entry}
+

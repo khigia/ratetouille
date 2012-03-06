@@ -92,6 +92,7 @@ instance Yesod Rat where
     defaultLayout widget = do
         master <- getYesod
         mmsg <- getMessage
+        muser <- maybeAuth
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -100,6 +101,11 @@ instance Yesod Rat where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
+            Just route <- lift getCurrentRoute
+            routeToMaster <- lift getRouteToMaster
+            let fullRoute = routeToMaster route
+            let isRootR = RootR == fullRoute
+            let isCollectionListR = CollectionListR == fullRoute
             $(widgetFile "normalize")
             $(widgetFile "default-layout")
         hamletToRepHtml $(hamletFile "templates/default-layout-wrapper.hamlet")
@@ -124,6 +130,7 @@ instance Yesod Rat where
 
     -- Enable Javascript async loading
     yepnopeJs _ = Just $ Right $ StaticR js_modernizr_js
+
 
 -- How to run database actions.
 instance YesodPersist Rat where

@@ -1,7 +1,7 @@
 Default: &defaults
   host: "localhost"
   port: 3000
-  copyright: Insert copyright statement here
+  copyright: Free as in free beer
   #analytics: UA-YOURCODE
 
 Development:

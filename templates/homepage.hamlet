@@ -1,2 +1,9 @@
-<h1>_{MsgHello}
-<h2 ##{h2id}>You do not have Javascript enabled.
+<h2>TODO
+<ul>
+    <li>homepage with some content
+    <li>rating and score
+    <li>tags on entry (sort, filter and adjust rating accordingly)
+    <li>delete entry
+    <li>hide the forms to add collection/entry
+    <li>login redirection sucks
+    <li>nav bar code is crapy

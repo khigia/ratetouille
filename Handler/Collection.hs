@@ -1,9 +1,10 @@
 module Handler.Collection where
 
 import Import
+import Yesod.Auth
 
 collectionForm :: Form Collection
-collectionForm = renderDivs $ Collection
+collectionForm = renderBootstrap $ Collection
     <$> areq textField "name" Nothing
     <*> areq textField "stupid" Nothing
 
@@ -26,6 +27,7 @@ postCollectionListR = do
 
 getCollectionListR :: Handler RepHtml
 getCollectionListR = do
+    muser <- maybeAuth
     collections <- runDB $ selectList [] [Desc CollectionName]
     ((_, collectionWidget), enctype) <- generateFormPost collectionForm
     defaultLayout $ do
@@ -33,12 +35,13 @@ getCollectionListR = do
         $(widgetFile "collections")
 
 entryForm :: CollectionId -> Form Entry
-entryForm collectionId = renderDivs $ Entry
+entryForm collectionId = renderBootstrap $ Entry
     <$> pure collectionId
     <*> areq textField "text" Nothing
 
 getCollectionItemR :: CollectionId -> Handler RepHtml
 getCollectionItemR collectionId = do
+    muser <- maybeAuth
     (collection, entries) <- runDB $ do
         collection <- get404 collectionId
         entries <- selectList [EntryCollectionId ==. collectionId] []
@@ -53,7 +56,7 @@ postCollectionItemR collectionId = do
     ((res, entryWidget), enctype) <- runFormPost (entryForm collectionId)
     case res of
         FormSuccess entry -> do
-            entryId <- runDB $ insert entry
+            _entryId <- runDB $ insert entry
             setMessage "Entry created"
             redirect $ CollectionItemR collectionId
         _ -> defaultLayout $ do

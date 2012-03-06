@@ -1,11 +1,15 @@
 <h1>Collection: #{collectionName collection}
-<h2>Add a new entry
-<form method=post enctype=#{enctype}>
-    ^{entryWidget}
-    <div>
-        <input type=submit value="Create entry">
-<h2>Existing entries
 <ul>
-    $forall Entity entryId entry <- entries
+    $forall Entity _ entry <- entries
         <li>#{entryText entry}
 
+$maybe Entity _ _ <- muser
+    <form .form-horizontal method=post enctype=#{enctype}>
+        <fieldset>
+            <legend>Add entry to collection
+            ^{entryWidget}
+            <div .controls>
+                <input .btn-primary type=submit value="Create entry">
+$nothing
+    <p>
+        <a href=@{AuthR LoginR}>_{MsgLoginToCreateEntry}

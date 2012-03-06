@@ -1,5 +1,32 @@
+<header>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar">
+                <span class="icon-bar">
+                <span class="icon-bar">
+            <a class="brand" href="#">Ratetouille
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li :isRootR:.active>
+                        <a href=@{RootR}>Home
+                    <li :isCollectionListR:.active>
+                        <a href=@{CollectionListR}>Collections
+                <ul class="nav pull-right">
+                    <li .divider-vertical>
+                    <li>
+                        $maybe Entity _ user <- muser
+                            <a href=@{AuthR LogoutR}>Logout [#{userIdent user}]
+                        $nothing
+                            <a href=@{AuthR LoginR}>login
+
 $maybe msg <- mmsg
     <div #message>#{msg}
-^{widget}
-<footer>
-    #{extraCopyright $ appExtra $ settings master}
+
+<div class="container">
+    ^{widget}
+
+\<!- <footer>
+    \<!- #{extraCopyright $ appExtra $ settings master}

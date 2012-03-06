@@ -1,9 +1,3 @@
-<h1>Create a new collection
-<form method=post enctype=#{enctype}>
-    ^{collectionWidget}
-    <div>
-        <input type=submit value="Create collection">
-
 <h1>Collections
 $if null collections
     <p>No collection found.
@@ -12,3 +6,14 @@ $else
         $forall Entity collectionId collection <- collections
             <li>
                 <a href=@{CollectionItemR collectionId}>#{collectionName collection}
+
+$maybe Entity _ _ <- muser
+    <form .form-horizontal method=post enctype=#{enctype}>
+        <fieldset>
+            <legend>Create new collection
+            ^{collectionWidget}
+            <div .controls>
+                <input .btn-primary type=submit value="Create collection">
+$nothing
+    <p>
+        <a href=@{AuthR LoginR}>_{MsgLoginToCreateCollection}

@@ -15,3 +15,8 @@ Collection
 Entry
     collectionId CollectionId
     text Text
+Rating
+    userId UserId
+    entryId EntryId
+    value Int
+    UniqueRating userId entryId

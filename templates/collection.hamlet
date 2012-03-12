@@ -1,7 +1,15 @@
 <h1>Collection: #{collectionName collection}
 <ul>
-    $forall Entity _ entry <- entries
+    $forall Entity entryKey entry <- entries
         <li>#{entryText entry}
+
+<ul>
+    $forall Entrat ent mrat <- entrat
+        <li>#{entryText ent}
+            $maybe rat <- mrat
+                <p>NOT EMPTY #{ratingValue rat}
+            ^{ratingWidget}
+            ^{ratingWidget2}
 
 $maybe Entity _ _ <- muser
     <form .form-horizontal method=post enctype=#{enctype}>

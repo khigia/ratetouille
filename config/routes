@@ -4,9 +4,9 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/ RootR GET
-/test TestR GET
+/                          RootR GET
 /collections/              CollectionListR GET POST
 /collections/#CollectionId CollectionItemR GET POST
 /entries/                  EntryListR GET
 /entries/#EntryId          EntryItemR GET
+/ratings/#CollectionId     RatingListR POST

@@ -1,17 +1,19 @@
 <h1>Collection: #{collectionName collection}
-<ul>
-    $forall Entity entryKey entry <- entries
-        <li>#{entryText entry}
 
-<ul>
-    $forall Entrat ent mrat <- entrat
-        <li>#{entryText ent}
-            $maybe rat <- mrat
-                <p>NOT EMPTY #{ratingValue rat}
-            ^{ratingWidget}
-            ^{ratingWidget2}
+
+<div .container>
+    Stars example:
+    <div id="stars-wrapper1">
+        <input type="radio" name="newrate" value="1" title="Very poor">
+        <input type="radio" name="newrate" value="2" title="Poor">
+        <input type="radio" name="newrate" value="3" title="Not that bad">
 
 $maybe Entity _ _ <- muser
+    <div .container>
+        <form id="ratingsform" action=@{RatingListR collectionId} method=post enctype=#{ratingsEnctype}>
+            ^{ratingsWidget}
+            <div>
+                <input type=submit value="Rate!">
     <form .form-horizontal method=post enctype=#{enctype}>
         <fieldset>
             <legend>Add entry to collection
@@ -19,5 +21,8 @@ $maybe Entity _ _ <- muser
             <div .controls>
                 <input .btn-primary type=submit value="Create entry">
 $nothing
+    <ul>
+        $forall Entity _entryKey entry <- entries
+            <li>#{entryText entry}
     <p>
         <a href=@{AuthR LoginR}>_{MsgLoginToCreateEntry}

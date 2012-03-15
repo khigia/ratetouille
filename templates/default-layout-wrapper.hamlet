@@ -45,7 +45,6 @@
         \<![endif]-->
         
         \<!-- Placed at the end of the document so the pages load faster -->
-        <script src="/static/js/jquery.js">
         <script src="/static/js/bootstrap-transition.js">
         <script src="/static/js/bootstrap-alert.js">
         <script src="/static/js/bootstrap-modal.js">

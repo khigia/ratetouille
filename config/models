@@ -18,5 +18,5 @@ Entry
 Rating
     userId UserId
     entryId EntryId
-    value Int
+    value Int Maybe
     UniqueRating userId entryId

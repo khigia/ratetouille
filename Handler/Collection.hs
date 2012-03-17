@@ -143,24 +143,52 @@ ratingMForm :: UserId
             -> Maybe (Entity Entry, Maybe Rating)
             -> MForm Rat Rat (FormResult Rating, Widget)
 ratingMForm userId mentrat = do
-    let rates = map (pack . show &&& id) [1..3]
+    -- let rates = map (pack . show &&& id) [1..3]
     -- TODO probalbly unKey, fromPersistValue toPersistValue are better
     -- than show/read
     (entryRes, entryView) <- mreq hiddenField "unsued" ((pack . show . entityKey . fst) <$> mentrat)
-    let mrating = fromMaybe Nothing $ liftM snd mentrat
+    let mrating::Maybe Rating
+        mrating = fromMaybe Nothing $ liftM snd mentrat
     -- TODO make this field hidden, create own radio view acting on
     -- the hidden field through jquery ui stars
-    (valueRes, valueView) <- mopt (radioFieldList rates) (FieldSettings {fsLabel=pack "unsued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) (ratingValue <$> mrating)
+    --(valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) (pack . show $ fromMaybe (Just 0:: Maybe Int) (ratingValue <$> mrating))
+    -- (valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) Just 0
+    valueName <- newFormIdent
+    let value :: Int
+        value = fromMaybe 0 . fromMaybe Nothing $ ratingValue <$> mrating
+    (valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Just valueName, fsClass=[]}) (pack . show . fromMaybe 0 . ratingValue <$> mrating)
+    -- (valueRes, valueView) <- mopt (radioFieldList rates) (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) (ratingValue <$> mrating)
+    let parseMaybeInt :: Text -> Maybe Int
+        parseMaybeInt = Just . read . unpack
     let res = Rating <$> pure userId
                      <*> liftA (read . unpack) entryRes
-                     <*> valueRes
+                     -- <*> valueRes
+                     <*> liftA parseMaybeInt valueResH
+    let isValueChecked :: Int -> Bool
+        isValueChecked n | n == value = True
+        isValueChecked _              = False
+    let isValueChecked1 = isValueChecked 1
+        isValueChecked2 = isValueChecked 2
+        isValueChecked3 = isValueChecked 3
     let widget = do
         toWidget [whamlet|
 <li>
     $maybe entrat <- mentrat
         #{entryText $ entityVal $ fst entrat}
     ^{fvInput entryView}
-    ^{fvInput valueView}
+    <div id="divradio#{valueName}">
+        ^{fvInput valueViewH}
+        <input type="radio" name=#{valueName} value="1" title="Low" :isValueChecked 1:checked>
+        <input type="radio" name=#{valueName} value="2" title="Medium" :isValueChecked 2:checked>
+        <input type="radio" name=#{valueName} value="3" title="High" :isValueChecked 3:checked>
+    bea
+|]
+        toWidget [julius|
+$("#divradio#{valueName}").stars({
+  callback: function(ui, type, value){
+    $("#divradio#{valueName} > input:first").attr("value", $("#divradio#{valueName} > input:last").attr("value"))
+  }
+});
 |]
     return (res, widget)
 

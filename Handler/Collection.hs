@@ -2,7 +2,8 @@ module Handler.Collection where
 
 import Import
 import Yesod.Auth
---import Yesod.Form.MassInput
+
+import Handler.Entry (entryForm, getEntryListR, getEntryItemR)
 
 import Control.Applicative (liftA)
 import Control.Arrow
@@ -46,16 +47,7 @@ getCollectionListR = do
         setTitle "ratetouille collections"
         $(widgetFile "collections")
 
-entryForm :: CollectionId -> Form Entry
-entryForm collectionId = renderBootstrap $ Entry
-    <$> pure collectionId
-    <*> areq textField "text" Nothing
-
-data Entrat = Entrat {
-    erEntry::Entry
-  , erRating::Maybe Rating
-}
-
+--TODO getRatingListR
 getCollectionItemR :: CollectionId -> Handler RepHtml
 getCollectionItemR collectionId = do
     muser <- maybeAuth
@@ -124,21 +116,6 @@ postCollectionItemR collectionId = do
 |]
 
 
-getEntryListR :: Handler RepHtml
-getEntryListR = do
-    entries <- runDB $ selectList [] []
-    defaultLayout $ do
-        setTitle "ratetouille entries"
-        $(widgetFile "entries")
-
-getEntryItemR :: EntryId -> Handler RepHtml
-getEntryItemR entryId = do
-    entry <- runDB $ do get404 entryId
-    defaultLayout $ do
-        setTitle "ratetouille entry"
-        $(widgetFile "entry")
-
-
 ratingMForm :: UserId
             -> Maybe (Entity Entry, Maybe Rating)
             -> MForm Rat Rat (FormResult Rating, Widget)
@@ -167,9 +144,6 @@ ratingMForm userId mentrat = do
     let isValueChecked :: Int -> Bool
         isValueChecked n | n == value = True
         isValueChecked _              = False
-    let isValueChecked1 = isValueChecked 1
-        isValueChecked2 = isValueChecked 2
-        isValueChecked3 = isValueChecked 3
     let widget = do
         toWidget [whamlet|
 <li>

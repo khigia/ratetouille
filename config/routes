@@ -6,7 +6,7 @@
 
 /                          RootR GET
 /collections/              CollectionListR GET POST
-/collections/#CollectionId CollectionItemR GET POST
+/collections/#CollectionId CollectionItemR POST
 /entries/                  EntryListR GET
 /entries/#EntryId          EntryItemR GET
-/ratings/#CollectionId     RatingListR POST
+/ratings/#CollectionId     RatingListR GET POST

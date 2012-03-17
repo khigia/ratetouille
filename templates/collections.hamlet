@@ -5,7 +5,7 @@ $else
     <ul>
         $forall Entity collectionId collection <- collections
             <li>
-                <a href=@{CollectionItemR collectionId}>#{collectionName collection}
+                <a href=@{RatingListR collectionId}>#{collectionName collection}
 
 $maybe Entity _ _ <- muser
     <form .form-horizontal method=post enctype=#{enctype}>

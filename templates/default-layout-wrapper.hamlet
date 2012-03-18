@@ -13,12 +13,12 @@
 
         <meta name="viewport" content="width=device-width,initial-scale=1">
 
-        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
         <style>
             body {
               padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
-        <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
         ^{pageHead pc}
 
         \<!--[if lt IE 9]>
@@ -45,15 +45,15 @@
         \<![endif]-->
         
         \<!-- Placed at the end of the document so the pages load faster -->
-        <script src="/static/js/bootstrap-transition.js">
-        <script src="/static/js/bootstrap-alert.js">
-        <script src="/static/js/bootstrap-modal.js">
-        <script src="/static/js/bootstrap-dropdown.js">
-        <script src="/static/js/bootstrap-scrollspy.js">
-        <script src="/static/js/bootstrap-tab.js">
-        <script src="/static/js/bootstrap-tooltip.js">
-        <script src="/static/js/bootstrap-popover.js">
-        <script src="/static/js/bootstrap-button.js">
-        <script src="/static/js/bootstrap-collapse.js">
-        <script src="/static/js/bootstrap-carousel.js">
-        <script src="/static/js/bootstrap-typeahead.js">
+        \<!-- <script src="/static/bootstrap/js/bootstrap-transition.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-alert.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-modal.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-dropdown.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-scrollspy.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-tab.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-tooltip.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-popover.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-button.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-collapse.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-carousel.js"> -->
+        \<!-- <script src="/static/bootstrap/js/bootstrap-typeahead.js"> -->

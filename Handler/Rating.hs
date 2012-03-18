@@ -15,6 +15,8 @@ import Data.Text.Read (decimal)
 import Data.Traversable (sequenceA)
 import qualified Data.Map as Map
 
+maxRatingValue :: Int
+maxRatingValue = 3
 
 ratingMForm :: UserId
             -> Maybe (Entity Entry, Maybe Rating)
@@ -26,24 +28,21 @@ ratingMForm userId mentrat = do
     (entryRes, entryView) <- mreq hiddenField "unsued" ((pack . show . entityKey . fst) <$> mentrat)
     let mrating::Maybe Rating
         mrating = fromMaybe Nothing $ liftM snd mentrat
-    -- TODO make this field hidden, create own radio view acting on
-    -- the hidden field through jquery ui stars
-    --(valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) (pack . show $ fromMaybe (Just 0:: Maybe Int) (ratingValue <$> mrating))
-    -- (valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) Just 0
     valueName <- newFormIdent
     let value :: Int
-        value = fromMaybe 0 . fromMaybe Nothing $ ratingValue <$> mrating
-    (valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Just valueName, fsClass=[]}) (pack . show . fromMaybe 0 . ratingValue <$> mrating)
+        value = fromMaybe 0 $ ratingValue <$> mrating
+    (valueResH, valueViewH) <- mreq hiddenField (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Just valueName, fsClass=[]}) (Just $ pack $ show  value)
     -- (valueRes, valueView) <- mopt (radioFieldList rates) (FieldSettings {fsLabel=pack "unusued", fsTooltip=Nothing, fsId=Nothing, fsName=Nothing, fsClass=[]}) (ratingValue <$> mrating)
-    let parseMaybeInt :: Text -> Maybe Int
-        parseMaybeInt = Just . read . unpack
+    let parseInt :: Text -> Int
+        parseInt = read . unpack
     let res = Rating <$> pure userId
                      <*> liftA (read . unpack) entryRes
                      -- <*> valueRes
-                     <*> liftA parseMaybeInt valueResH
+                     <*> liftA parseInt valueResH
     let isValueChecked :: Int -> Bool
         isValueChecked n | n == value = True
         isValueChecked _              = False
+    let ratings = [1..maxRatingValue]
     let widget = do
         toWidget [whamlet|
 <li>
@@ -52,9 +51,8 @@ ratingMForm userId mentrat = do
     ^{fvInput entryView}
     <div id="divradio#{valueName}">
         ^{fvInput valueViewH}
-        <input type="radio" name=#{valueName} value="1" title="Low" :isValueChecked 1:checked>
-        <input type="radio" name=#{valueName} value="2" title="Medium" :isValueChecked 2:checked>
-        <input type="radio" name=#{valueName} value="3" title="High" :isValueChecked 3:checked>
+        $forall n <- ratings
+            <input type="radio" name=#{valueName} value="#{n}" :isValueChecked n:checked>
     bea
 |]
         toWidget [julius|
@@ -83,15 +81,6 @@ ratingsMForm userId mentrats extra = do
                 Just (env, _) ->
                     let c = fromMaybe 0 $ Map.lookup countName env >>= listToMaybe >>= readInt
                      in replicate c Nothing
-    -- TODO if env has entryCount=N param, use a list of N Nothing
-    -- instead of mentrats
-    -- TODO read env to extract either of:
-    --   all entryId stored as hiddenField
-    --   an hidden field which is the count of entryId
-    -- else can query all entries of collection and hope collection
-    -- hasn't changed :(
-    -- TODO initialize with a list of N Nothing, N being read in env,
-    -- and we can even load the entries if we want
     let aggr rws = (sequenceA $ map fst rws, map snd rws)
     (res, wids) <- liftM aggr $ mapM (ratingMForm userId) vals
     let valCount = length vals
@@ -103,11 +92,6 @@ ratingsMForm userId mentrats extra = do
     $forall wid <- wids
         ^{wid}
 <input .count type=hidden name=#{countName} value=#{valCount}>
-|]
-        toWidget [julius|
-$("#stars-wrapper1").stars();
-$("#ratingsform label").hide();
-$("#ratingsform input[value=none]").hide();
 |]
     return (res, widget)
 
@@ -180,6 +164,7 @@ postRatingListVoteR collectionId = do
 
 getRatingListScoreR :: CollectionId -> Handler RepHtml
 getRatingListScoreR collectionId = do
+    muser <- maybeAuth
     (collection, entries) <- runDB $ do
         collection <- get404 collectionId
         entries <- selectList [EntryCollectionId ==. collectionId] []
@@ -204,28 +189,28 @@ getRatingListScoreR collectionId = do
         -- Bayesian average
         average :: (Real a, Fractional b) => [a] -> b
         average xs = realToFrac (sum xs) / realToFrac (length xs)
-        getValue = fromMaybe 0 . ratingValue
-        allRatings = map (filter (>0)) values
+        getValue = ratingValue
+        allRatings = filter (/= []) ratings'
             where values = map (map getValue) (map snd entrat)
-        allCountAvg = average counts :: Double
+                  ratings' = map (filter (>0)) values
+        allCountAvg = if length counts == 0
+                      then 0.0 :: Double
+                      else average counts :: Double
             where counts = map length allRatings
         allRatingAvg = average ratings' :: Double
             where ratings' = map average allRatings :: [Double]
-        scores = map (\(e,rs) -> (entityVal e, score rs)) entrat
-        score :: [Rating] -> Double
-        score rs = ((allCountAvg * allRatingAvg) + (count' * valueAvg))
-                   / (allCountAvg + count')
+        scores = map (\(r,(e,(n,s))) -> (r, e, s, n)) ranked
+            where scores' = map (\(e,rs) -> (entityVal e, score rs)) entrat
+                  sorted = sortBy (\a b -> compare (snd $ snd b) (snd $ snd a)) scores'
+                  ranked = zip [1..] sorted
+        score :: [Rating] -> (Int, Double)
+        score rs = (length values, (scoreValues values) * 100 / fromIntegral maxRatingValue)
             where values = filter (>0) $ map getValue rs
+                  scoreValues [] = 0.0
+                  scoreValues _  = ((allCountAvg * allRatingAvg) + (count' * average values))
+                                   / (allCountAvg + count')
                   count' = fromIntegral $ length values
-                  valueAvg = average values
     defaultLayout $ do
         setTitle "ratetouille score"
-        addScriptRemote "/static/js/jquery-ui-1.8.18.custom/js/jquery-1.7.1.min.js"
-        addScriptRemote "/static/js/jquery-ui-1.8.18.custom/js/jquery-ui-1.8.18.custom.min.js"
-        addScriptRemote "/static/js/jquery.ui.stars-3.0/jquery.ui.stars.js"
-        toWidgetHead [hamlet|
-<link rel="stylesheet" type="text/css" href="/static/js/jquery.ui.stars-3.0/jquery.ui.stars.css">
-|]
-        -- TODO display as partial stars
         $(widgetFile "ratings-score")
 

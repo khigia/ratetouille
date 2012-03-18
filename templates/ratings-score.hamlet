@@ -1,10 +1,26 @@
 <h1>Collection: #{collectionName collection}
 
-<ul>
-    $forall (entry, score) <- scores
-        <li>#{entryText entry}: #{score}
+<table .table .table-condensed>
+    <thead>
+        <tr>
+            <th>##
+            <th>Votes
+            <th>Score
+            <th>Entry
+    <tbody>
+    $forall (rank, entry, score, votes) <- scores
+        <tr>
+            <td>
+                #{show rank}
+            <td>
+                <span .badge>#{show votes}
+            <td>
+                <div .progress .progress-striped .progress-success>
+                    <div class="bar" style="width: #{score}%;">
+            <td>
+                #{entryText entry}
 
-<ul>
-    <li>TODO If user, link to rating page
-    <li>TODO Use progress bar view for score
-    <li>TODO Sort by score
+<div .container>
+    $maybe user <- muser
+        <a href=@{RatingListVoteR collectionId}>
+            Edit your ratings

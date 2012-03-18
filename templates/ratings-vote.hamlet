@@ -1,0 +1,13 @@
+<h1>Collection: #{collectionName collection}
+
+
+$maybe Entity _ _ <- muser
+    <div .container>
+        <form id="ratingsform" action=@{RatingListVoteR collectionId} method=post enctype=#{ratingsEnctype}>
+            ^{ratingsWidget}
+            <div>
+                <input type=submit value="Rate!">
+$nothing
+    <ul>
+        $forall Entity _entryKey entry <- entries
+            <li>#{entryText entry}

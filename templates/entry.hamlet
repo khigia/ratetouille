@@ -1,4 +1,9 @@
 <h1>Entry:
-<p>#{entryText entry}
+<div .container>
+    <form .form-horizontal method=post enctype=#{enctype}>
+        <fieldset>
+        ^{entryWidget}
+        <div .controls>
+            <input .btn-primary type=submit value="Edit entry">
 
 

@@ -1,10 +1,10 @@
 <h2>TODO
 <ul>
-    <li>homepage with some content
-    <li>rating and score
-    <li>tags on entry (sort, filter and adjust rating accordingly)
-    <li>delete entry
-    <li>hide the forms to add collection/entry
-    <li>login redirection sucks
-    <li>nav bar code is crapy
-    <li><a href="http://orkans-tmp.22web.net/star_rating/#main-menu=5&demo-tabs=4">stars css
+    <li>TODO model Rating should not have value as maybe
+    <li>TODO homepage with some content
+    <li>TODO tags on entry (sort, filter and adjust rating accordingly)
+    <li>TODO all delete need popup confirm; never delete, just mark as inactive (so admin can recover if needed)
+    <li>TODO hide the forms to add collection/entry
+    <li>TODO login redirection sucks
+    <li>TODO nav bar code is crapy
+    <li>TODO handler/Rating code is even worse

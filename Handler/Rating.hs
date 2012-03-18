@@ -111,8 +111,8 @@ $("#ratingsform input[value=none]").hide();
 |]
     return (res, widget)
 
-getRatingListR :: CollectionId -> Handler RepHtml
-getRatingListR collectionId = do
+getRatingListVoteR :: CollectionId -> Handler RepHtml
+getRatingListVoteR collectionId = do
     muser <- maybeAuth
     (collection, entries) <- runDB $ do
         collection <- get404 collectionId
@@ -144,8 +144,6 @@ getRatingListR collectionId = do
         keyR (Entity _ x) = ratingEntryId x
         valR (Entity _ x) = x
     let entrat = ziprat sortedEntries sortedRatings []
-    -- Widget to create new Entry
-    ((_, entryWidget), enctype) <- generateFormPost (entryForm collectionId)
     -- Widget for user to rate entries
     let Just (Entity userId userVal) = muser -- TODO user maybe!
     ((ratingsRes, ratingsWidget), ratingsEnctype) <- generateFormPost $ ratingsMForm userId (Just (map Just entrat))
@@ -158,10 +156,10 @@ getRatingListR collectionId = do
         toWidgetHead [hamlet|
 <link rel="stylesheet" type="text/css" href="/static/js/jquery.ui.stars-3.0/jquery.ui.stars.css">
 |]
-        $(widgetFile "collection")
+        $(widgetFile "ratings-vote")
 
-postRatingListR :: CollectionId -> Handler RepHtml
-postRatingListR collectionId = do
+postRatingListVoteR :: CollectionId -> Handler RepHtml
+postRatingListVoteR collectionId = do
     muser <- maybeAuth
     let Just (Entity userId _) = muser -- TODO user maybe!
     ((res, _widget), _enctype) <- runFormPost (ratingsMForm userId Nothing)
@@ -175,8 +173,59 @@ postRatingListR collectionId = do
                       Left entity -> runDB $ replace (entityKey entity) r
                       Right _k -> return ()
             mapM_ insertOrUpdate ratings
-            redirect $ RatingListR collectionId
+            redirect $ RatingListScoreR collectionId
                 --erating <- runDB $ insertBy rating
-        _ -> redirect $ RatingListR collectionId
+        _ -> redirect $ RatingListVoteR collectionId
     -- TODO update EntryStats and save
+
+getRatingListScoreR :: CollectionId -> Handler RepHtml
+getRatingListScoreR collectionId = do
+    (collection, entries) <- runDB $ do
+        collection <- get404 collectionId
+        entries <- selectList [EntryCollectionId ==. collectionId] []
+        return (collection, entries)
+    -- TODO get the aggregated (pre-computed) scores
+    ratings <- runDB $ selectList [ RatingEntryId <-. map entityKey entries] []
+    -- Painfully doing a join Entries with Ratings
+    let cmpK ka kb | ka <= kb = LT
+                   | otherwise = GT
+        cmpE (Entity ka _) (Entity kb _) = cmpK ka kb
+        cmpR (Entity _ a) (Entity _ b) = cmpK (ratingEntryId a) (ratingEntryId b)
+        sortedEntries = sortBy cmpE entries
+        sortedRatings = sortBy cmpR ratings
+        ziprat []     _  result = result
+        ziprat (e:es) rs result =
+            ziprat es rest ((e,votes):result)
+            where (evotes, rest) = span ((keyE e ==) . keyR) rs
+                  votes = map entityVal evotes
+        keyE (Entity k _) = k
+        keyR (Entity _ x) = ratingEntryId x
+    let entrat = ziprat sortedEntries sortedRatings []
+        -- Bayesian average
+        average :: (Real a, Fractional b) => [a] -> b
+        average xs = realToFrac (sum xs) / realToFrac (length xs)
+        getValue = fromMaybe 0 . ratingValue
+        allRatings = map (filter (>0)) values
+            where values = map (map getValue) (map snd entrat)
+        allCountAvg = average counts :: Double
+            where counts = map length allRatings
+        allRatingAvg = average ratings' :: Double
+            where ratings' = map average allRatings :: [Double]
+        scores = map (\(e,rs) -> (entityVal e, score rs)) entrat
+        score :: [Rating] -> Double
+        score rs = ((allCountAvg * allRatingAvg) + (count' * valueAvg))
+                   / (allCountAvg + count')
+            where values = filter (>0) $ map getValue rs
+                  count' = fromIntegral $ length values
+                  valueAvg = average values
+    defaultLayout $ do
+        setTitle "ratetouille score"
+        addScriptRemote "/static/js/jquery-ui-1.8.18.custom/js/jquery-1.7.1.min.js"
+        addScriptRemote "/static/js/jquery-ui-1.8.18.custom/js/jquery-ui-1.8.18.custom.min.js"
+        addScriptRemote "/static/js/jquery.ui.stars-3.0/jquery.ui.stars.js"
+        toWidgetHead [hamlet|
+<link rel="stylesheet" type="text/css" href="/static/js/jquery.ui.stars-3.0/jquery.ui.stars.css">
+|]
+        -- TODO display as partial stars
+        $(widgetFile "ratings-score")
 

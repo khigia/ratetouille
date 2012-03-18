@@ -1,0 +1,10 @@
+<h1>Collection: #{collectionName collection}
+
+<ul>
+    $forall (entry, score) <- scores
+        <li>#{entryText entry}: #{score}
+
+<ul>
+    <li>TODO If user, link to rating page
+    <li>TODO Use progress bar view for score
+    <li>TODO Sort by score

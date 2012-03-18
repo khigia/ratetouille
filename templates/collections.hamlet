@@ -4,8 +4,15 @@ $if null collections
 $else
     <ul>
         $forall Entity collectionId collection <- collections
-            <li>
-                <a href=@{RatingListR collectionId}>#{collectionName collection}
+            <li><div .container>
+                <div>
+                    #{collectionName collection}
+                <div>
+                    <a .btn .btn-mini .btn-success href=@{RatingListScoreR collectionId}>Scores
+                    $maybe Entity _ _ <- muser
+                        <a .btn .btn-mini .btn-primary href=@{RatingListVoteR collectionId}>Vote!
+                        <a .btn .btn-mini .btn-warning href=@{CollectionItemR collectionId}>Edit
+                        <a .btn .btn-mini .btn-danger href=@{CollectionItemDeleteR collectionId}>Delete
 
 $maybe Entity _ _ <- muser
     <form .form-horizontal method=post enctype=#{enctype}>

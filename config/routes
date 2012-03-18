@@ -4,9 +4,12 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/                          RootR GET
-/collections/              CollectionListR GET POST
-/collections/#CollectionId CollectionItemR POST
-/entries/                  EntryListR GET
-/entries/#EntryId          EntryItemR GET
-/ratings/#CollectionId     RatingListR GET POST
+/                                  RootR GET
+/collections/                      CollectionListR GET POST
+/collections/#CollectionId         CollectionItemR GET POST
+/collections/_delete/#CollectionId CollectionItemDeleteR GET
+/entries/                          EntryListR GET
+/entries/#EntryId                  EntryItemR GET POST
+/entries/_delete/#EntryId          EntryItemDeleteR GET
+/ratings/score/#CollectionId       RatingListScoreR GET
+/ratings/_vote/#CollectionId       RatingListVoteR GET POST

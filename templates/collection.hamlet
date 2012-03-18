@@ -1,28 +1,27 @@
 <h1>Collection: #{collectionName collection}
 
-
-<div .container>
-    Stars example:
-    <div id="stars-wrapper1">
-        <input type="radio" name="newrate" value="1" title="Very poor">
-        <input type="radio" name="newrate" value="2" title="Poor">
-        <input type="radio" name="newrate" value="3" title="Not that bad">
-
 $maybe Entity _ _ <- muser
     <div .container>
-        <form id="ratingsform" action=@{RatingListR collectionId} method=post enctype=#{ratingsEnctype}>
-            ^{ratingsWidget}
-            <div>
-                <input type=submit value="Rate!">
-    <form .form-horizontal method=post enctype=#{enctype}>
-        <fieldset>
-            <legend>Add entry to collection
-            ^{entryWidget}
-            <div .controls>
-                <input .btn-primary type=submit value="Create entry">
+        <ul>
+            $forall Entity k entry <- entries
+                <li><div .container>
+                    <div>
+                        #{entryText entry}
+                    <div>
+                        <a .btn .btn-mini .btn-warning href=@{EntryItemR k}>Edit
+                        <a .btn .btn-mini .btn-danger href=@{EntryItemDeleteR k}>Delete
+    <div .container>
+        <form .form-horizontal method=post enctype=#{enctype}>
+            <fieldset>
+                <legend>Add entry to collection
+                ^{entryWidget}
+                <div .controls>
+                    <input .btn-primary type=submit value="Create entry">
 $nothing
-    <ul>
-        $forall Entity _entryKey entry <- entries
-            <li>#{entryText entry}
-    <p>
-        <a href=@{AuthR LoginR}>_{MsgLoginToCreateEntry}
+    <div .container>
+        <ul>
+            $forall Entity _entryKey entry <- entries
+                <li>#{entryText entry}
+        <p>
+            <a href=@{AuthR LoginR}>_{MsgLoginToCreateEntry}
+

@@ -8,7 +8,6 @@ import Handler.Entry (entryForm, deleteEntry)
 collectionForm :: Form Collection
 collectionForm = renderBootstrap $ Collection
     <$> areq textField "name" Nothing
-    <*> areq textField "stupid" Nothing
 
 postCollectionListR :: Handler RepHtml
 postCollectionListR = do

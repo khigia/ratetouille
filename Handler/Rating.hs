@@ -16,7 +16,7 @@ import Data.Traversable (sequenceA)
 import qualified Data.Map as Map
 
 maxRatingValue :: Int
-maxRatingValue = 3
+maxRatingValue = 5
 
 ratingMForm :: UserId
             -> Maybe (Entity Entry, Maybe Rating)
@@ -45,7 +45,7 @@ ratingMForm userId mentrat = do
     let ratings = [1..maxRatingValue]
     let widget = do
         toWidget [whamlet|
-<li>
+<li .container>
     $maybe entrat <- mentrat
         #{entryText $ entityVal $ fst entrat}
     ^{fvInput entryView}
@@ -53,7 +53,6 @@ ratingMForm userId mentrat = do
         ^{fvInput valueViewH}
         $forall n <- ratings
             <input type="radio" name=#{valueName} value="#{n}" :isValueChecked n:checked>
-    bea
 |]
         toWidget [julius|
 $("#divradio#{valueName}").stars({
@@ -88,7 +87,7 @@ ratingsMForm userId mentrats extra = do
     let widget = do -- TODO in template file?
         toWidget [whamlet|
  #{extra}
-<ul>
+<ul .unstyled>
     $forall wid <- wids
         ^{wid}
 <input .count type=hidden name=#{countName} value=#{valCount}>
@@ -147,7 +146,7 @@ postRatingListVoteR collectionId = do
     muser <- maybeAuth
     let Just (Entity userId _) = muser -- TODO user maybe!
     ((res, _widget), _enctype) <- runFormPost (ratingsMForm userId Nothing)
-    setMessage $ toHtml $ show res
+    --TODO setMessage $ toHtml $ show res
     -- save rating in DB
     case res of
         FormSuccess ratings -> do

@@ -106,7 +106,7 @@ instance Yesod Rat where
             let fullRoute = routeToMaster route
             let isRootR = RootR == fullRoute
             let isCollectionListR = CollectionListR == fullRoute
-            $(widgetFile "normalize")
+            -- $(widgetFile "normalize")
             $(widgetFile "default-layout")
         hamletToRepHtml $(hamletFile "templates/default-layout-wrapper.hamlet")
 

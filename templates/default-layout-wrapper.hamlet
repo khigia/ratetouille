@@ -27,6 +27,7 @@
 
         <script>
           document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
 
     <body>
         ^{pageBody pc}
@@ -51,9 +52,12 @@
         \<!-- <script src="/static/bootstrap/js/bootstrap-dropdown.js"> -->
         \<!-- <script src="/static/bootstrap/js/bootstrap-scrollspy.js"> -->
         \<!-- <script src="/static/bootstrap/js/bootstrap-tab.js"> -->
-        \<!-- <script src="/static/bootstrap/js/bootstrap-tooltip.js"> -->
-        \<!-- <script src="/static/bootstrap/js/bootstrap-popover.js"> -->
+        <script src="/static/bootstrap/js/bootstrap-tooltip.js">
+        <script src="/static/bootstrap/js/bootstrap-popover.js">
         \<!-- <script src="/static/bootstrap/js/bootstrap-button.js"> -->
-        \<!-- <script src="/static/bootstrap/js/bootstrap-collapse.js"> -->
+        <script src="/static/bootstrap/js/bootstrap-collapse.js">
         \<!-- <script src="/static/bootstrap/js/bootstrap-carousel.js"> -->
         \<!-- <script src="/static/bootstrap/js/bootstrap-typeahead.js"> -->
+        <script>
+          \$("[rel=tooltip]").tooltip({placement:"bottom"});
+          \$("[rel=popover]").popover({placement:"bottom"});

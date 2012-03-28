@@ -1,22 +1,25 @@
-<h1>Collection: #{collectionName collection}
+<h1>#{collectionName collection} <a href=@{RatingListVoteR collectionId}><i class="icon-star-empty"></i></a>
 
 $maybe Entity _ _ <- muser
-    <div .container>
-        <ul>
-            $forall Entity k entry <- entries
-                <li><div .container>
-                    <div>
-                        #{entryText entry}
-                    <div>
-                        <a .btn .btn-mini .btn-warning href=@{EntryItemR k}>Edit
-                        <a .btn .btn-mini .btn-danger href=@{EntryItemDeleteR k}>Delete
-    <div .container>
-        <form .form-horizontal method=post enctype=#{enctype}>
-            <fieldset>
-                <legend>Add entry to collection
-                ^{entryWidget}
-                <div .controls>
-                    <input .btn-primary type=submit value="Create entry">
+    <div id="forms" .container>
+        <div>
+            <div>
+                <a data-toggle="collapse" data-parent="#forms" data-target="#add-entry">
+                    [+] Create new entry
+            <div id="add-entry" class="collapse">
+                <form .form-horizontal method=post enctype=#{enctype}>
+                    <fieldset>
+                        ^{entryWidget}
+                        <div .controls>
+                            <input .btn-primary type=submit value="Create entry">
+    <ul>
+        $forall Entity k entry <- entries
+            <li>
+                <div>
+                    #{entryText entry}
+                <div>
+                    <a .btn .btn-mini .btn-warning href=@{EntryItemR k}>Edit
+                    <a .btn .btn-mini .btn-danger href=@{EntryItemDeleteR k}>Delete
 $nothing
     <div .container>
         <ul>

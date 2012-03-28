@@ -1,7 +1,9 @@
 <h2>TODO
 <ul>
-    <li>TODO model Rating should not have value as maybe
     <li>TODO homepage with some content
+    <li>TODO ACL, collection admins, collection raters
+    <li>TODO snapshot of scores
+    <li>TODO rating is ok, wha about just allow ordering (priority)?
     <li>TODO tags on entry (sort, filter and adjust rating accordingly)
     <li>TODO all delete need popup confirm; never delete, just mark as inactive (so admin can recover if needed)
     <li>TODO hide the forms to add collection/entry

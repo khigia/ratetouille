@@ -1,4 +1,4 @@
-<h1>Collection: #{collectionName collection}
+<h1>#{collectionName collection} <a href=@{RatingListScoreR collectionId}><i class="icon-star"></i></a>
 
 
 $maybe Entity _ _ <- muser

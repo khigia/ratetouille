@@ -1,26 +1,31 @@
 <h1>Collections
-$if null collections
-    <p>No collection found.
-$else
-    <ul>
-        $forall Entity collectionId collection <- collections
-            <li><div .container>
-                <div>
-                    #{collectionName collection}
-                <div>
-                    <a .btn .btn-mini .btn-success href=@{RatingListScoreR collectionId}>Scores
-                    $maybe Entity _ _ <- muser
-                        <a .btn .btn-mini .btn-primary href=@{RatingListVoteR collectionId}>Vote!
-                        <a .btn .btn-mini .btn-warning href=@{CollectionItemR collectionId}>Edit
-                        <a .btn .btn-mini .btn-danger href=@{CollectionItemDeleteR collectionId}>Delete
 
 $maybe Entity _ _ <- muser
-    <form .form-horizontal method=post enctype=#{enctype}>
-        <fieldset>
-            <legend>Create new collection
-            ^{collectionWidget}
-            <div .controls>
-                <input .btn-primary type=submit value="Create collection">
+    <div id="forms">
+        <div>
+            <div>
+                <a data-toggle="collapse" data-parent="#forms" data-target="#add-entry">
+                    [+] Create new collection
+            <div id="add-entry" class="collapse in">
+                <form .form-horizontal method=post enctype=#{enctype}>
+                    <fieldset>
+                        ^{collectionWidget}
+                        <div .controls>
+                            <input .btn-primary type=submit value="Create collection">
 $nothing
     <p>
         <a href=@{AuthR LoginR}>_{MsgLoginToCreateCollection}
+
+$if null collections
+    <p>No collection found.
+$else
+  $forall Entity collectionId collection <- collections
+    <h2>
+        #{collectionName collection}
+    <div>
+        <a .btn .btn-mini .btn-success href=@{RatingListScoreR collectionId}><i class="icon-star icon-white"></i> Scores
+          $maybe Entity _ _ <- muser
+            <a .btn .btn-mini .btn-primary href=@{RatingListVoteR collectionId}><i class="icon-star-empty icon-white"></i> Vote!
+            <a .btn .btn-mini .btn-warning href=@{CollectionItemR collectionId}><i class="icon-edit icon-white"></i> Edit
+            <a .btn .btn-mini .btn-danger href=@{CollectionItemDeleteR collectionId}><i class="icon-trash icon-white"></i> Delete
+

@@ -34,6 +34,9 @@ getCollectionListR = do
     defaultLayout $ do
         setTitle "ratetouille collections"
         $(widgetFile "collections")
+        toWidget [julius|
+$(".collapse").collapse();
+|]
 
 postCollectionItemR :: CollectionId -> Handler RepHtml
 postCollectionItemR collectionId = do

@@ -1,4 +1,8 @@
-<h1>Collection: #{collectionName collection}
+<h1>
+    #{collectionName collection}
+  $maybe _user <- muser
+    \ <a href=@{CollectionItemR collectionId} rel="tooltip" data-original-title="Edit this collection."><i class="icon-pencil"></i></a>
+    \ <a href=@{RatingListVoteR collectionId} rel="tooltip" data-original-title="Vote for entries of this collection."><i class="icon-star-empty"></i></a>
 
 <table .table .table-condensed>
     <thead>
@@ -18,9 +22,4 @@
                 <div .progress .progress-striped .progress-success>
                     <div class="bar" style="width: #{score}%;">
             <td>
-                #{entryText entry}
-
-<div .container>
-    $maybe user <- muser
-        <a href=@{RatingListVoteR collectionId}>
-            Edit your ratings
+                <span rel="popover" data-content="blah blah TODO" data-original-title=#{entryText entry}>#{entryText entry}

@@ -15,6 +15,7 @@ import Data.Text.Read (decimal)
 import Data.Traversable (sequenceA)
 import qualified Data.Map as Map
 
+-- TODO property of collection
 maxRatingValue :: Int
 maxRatingValue = 5
 
@@ -25,7 +26,7 @@ ratingMForm userId mentrat = do
     -- let rates = map (pack . show &&& id) [1..3]
     -- TODO probalbly unKey, fromPersistValue toPersistValue are better
     -- than show/read
-    (entryRes, entryView) <- mreq hiddenField "unsued" ((pack . show . entityKey . fst) <$> mentrat)
+    (entryRes, entryView) <- mreq hiddenField "unused" ((pack . show . entityKey . fst) <$> mentrat)
     let mrating::Maybe Rating
         mrating = fromMaybe Nothing $ liftM snd mentrat
     valueName <- newFormIdent
@@ -161,6 +162,10 @@ postRatingListVoteR collectionId = do
         _ -> redirect $ RatingListVoteR collectionId
     -- TODO update EntryStats and save
 
+data RatingScore = RatingScore {rsCount :: Int,
+                                rsScore :: Double,
+                                rsSum :: Int}
+
 getRatingListScoreR :: CollectionId -> Handler RepHtml
 getRatingListScoreR collectionId = do
     muser <- maybeAuth
@@ -198,12 +203,14 @@ getRatingListScoreR collectionId = do
             where counts = map length allRatings
         allRatingAvg = average ratings' :: Double
             where ratings' = map average allRatings :: [Double]
-        scores = map (\(r,(e,(n,s))) -> (r, e, s, n)) ranked
+        scores = map (\(r,(e,s)) -> (r, e, s)) ranked
             where scores' = map (\(e,rs) -> (entityVal e, score rs)) entrat
-                  sorted = sortBy (\a b -> compare (snd $ snd b) (snd $ snd a)) scores'
+                  sorted = sortBy (\a b -> compare (rsScore $ snd b) (rsScore $ snd a)) scores'
                   ranked = zip [1..] sorted
-        score :: [Rating] -> (Int, Double)
-        score rs = (length values, (scoreValues values) * 100 / fromIntegral maxRatingValue)
+        score :: [Rating] -> RatingScore
+        score rs = RatingScore {rsCount = length values,
+                                rsScore = (scoreValues values) * 100 / fromIntegral maxRatingValue,
+                                rsSum = sum values}
             where values = filter (>0) $ map getValue rs
                   scoreValues [] = 0.0
                   scoreValues _  = ((allCountAvg * allRatingAvg) + (count' * average values))

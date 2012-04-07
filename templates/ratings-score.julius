@@ -1,0 +1,160 @@
+jQuery(document).ready(function() {
+
+var w = 100;
+var h = w;
+var r = w/2;
+var ir = r/(1.618*1.618);
+
+// this is not same as "var data = $().map(...)
+var data = [];
+jQuery("table tbody tr").each(function(i) {
+    var cn = jQuery("td:nth-child(2) div:first", this);
+    var cl = cn.attr("label");
+    var cv = Math.round(parseFloat(cn.attr("value")));
+    var sn = jQuery("td:nth-child(3) div:first", this);
+    var sl = sn.attr("label");
+    var sv = Math.round(parseFloat(sn.attr("value")));
+    var rn = jQuery("td:nth-child(4) div:first", this);
+    var rl = rn.attr("label");
+    var rv = Math.round(parseFloat(rn.attr("value")));
+    if (cv > 0 ) {
+    data.push({"count": {"label": cl, "value": cv},
+              "sum": {"label": sl, "value": sv},
+              "score": {"label": rl, "value": rv}});
+    }
+});
+
+
+
+var color = d3.scale.category10();
+
+var arc = d3.svg.arc()
+    .innerRadius(ir)
+    .outerRadius(r);
+
+// Interpolate the arcs in data space.
+function arcTween(a) {
+  var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+  return function(t) {
+    var b = i(t);
+    a.x0 = b.x;
+    a.dx0 = b.dx;
+    return arc(b);
+  };
+}
+
+var vis = d3.select("#chart-svg")
+    .append("svg:svg")
+        .attr("width", w)
+        .attr("height", h)
+    .append("svg:g")
+        .attr("transform", "translate(" + w/2 + "," + h/2 + ")");
+
+var arcs = vis
+    .data([data])
+    .selectAll("g.slice")
+    .data(d3.layout.pie().value(function(d) { return d.score.value;}))
+    .enter()
+    .append("svg:g")
+    .attr("class", "slice");
+
+var paths = arcs.append("path")
+    .attr("fill", function(d, i) { return color(i); } )
+    .attr("d", arc);
+    //.each(stash);
+
+var texts = arcs.append("svg:text")
+    .attr("transform", function(d) {
+        return "translate(" + arc.centroid(d) + ")";
+    })
+    .attr("text-anchor", "middle")
+    .text(function(d, i) { return data[i].count.label; });
+
+d3.select("#chart-count").on("click", function() {
+  t=[];
+  paths
+      .data(d3.layout.pie().value(function(d) { return d.count.value; }))
+    .transition()
+      .duration(1500)
+      .attr("d", function(d) { t.push(d); return arc(d);});
+  texts
+      .data(d3.layout.pie().value(function(d) { return d.count.value; }))
+    .transition()
+      .duration(1500)
+    .attr("transform", function(d) {
+        return "translate(" + arc.centroid(d) + ")";
+    })
+  console.log(t);
+
+  d3.select("#chart-count").classed("active", false);
+  d3.select("#chart-sum").classed("active", true);
+  d3.select("#chart-score").classed("active", true);
+});
+
+d3.select("#chart-sum").on("click", function() {
+  t=[];
+  paths
+      .data(d3.layout.pie().value(function(d) { return d.sum.value; }))
+    .transition()
+      .duration(1500)
+      .attr("d", function(d) { t.push(d); return arc(d);});
+  texts
+      .data(d3.layout.pie().value(function(d) { return d.sum.value; }))
+    .transition()
+      .duration(1500)
+    .attr("transform", function(d) {
+        return "translate(" + arc.centroid(d) + ")";
+    })
+  console.log(t);
+
+  d3.select("#chart-count").classed("active", true);
+  d3.select("#chart-sum").classed("active", false);
+  d3.select("#chart-score").classed("active", true);
+});
+
+d3.select("#chart-avg").on("click", function() {
+  paths
+      .data(d3.layout.pie().value(function(d) { return d.sum.value / d.count.value; }))
+    .transition()
+      .duration(1500)
+      .attr("d", function(d) { return arc(d);});
+  texts
+      .data(d3.layout.pie().value(function(d) { return d.sum.value / d.count.value; }))
+    .transition()
+      .duration(1500)
+    .attr("transform", function(d) {
+        return "translate(" + arc.centroid(d) + ")";
+    })
+  console.log(t);
+
+  d3.select("#chart-count").classed("active", false);
+  d3.select("#chart-sum").classed("active", true);
+  d3.select("#chart-score").classed("active", true);
+});
+
+d3.select("#chart-score").on("click", function() {
+  t=[];
+  paths
+      .data(d3.layout.pie().value(function(d) { return d.score.value; }))
+    .transition()
+      .duration(1500)
+      .attr("d", function(d) { t.push(d); return arc(d);});
+  texts
+      .data(d3.layout.pie().value(function(d) { return d.score.value; }))
+    .transition()
+      .duration(1500)
+    .attr("transform", function(d) {
+        return "translate(" + arc.centroid(d) + ")";
+    })
+//      .data(partition.value(function(d) { return d.score.value; }))
+//    .transition()
+//      .duration(1500)
+//      .attr("d", arc);
+  console.log(t);
+
+  d3.select("#chart-count").classed("active", true);
+  d3.select("#chart-sum").classed("active", true);
+  d3.select("#chart-score").classed("active", false);
+});
+
+});

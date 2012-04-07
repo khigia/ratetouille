@@ -4,22 +4,34 @@
     \ <a href=@{CollectionItemR collectionId} rel="tooltip" data-original-title="Edit this collection."><i class="icon-pencil"></i></a>
     \ <a href=@{RatingListVoteR collectionId} rel="tooltip" data-original-title="Vote for entries of this collection."><i class="icon-star-empty"></i></a>
 
+<div id="chart">
+  <button id="chart-count">#Votes
+  <button id="chart-sum">#Stars
+  <button id="chart-avg">Avg
+  <button id="chart-score">Score
+  <div id="chart-svg">
 <table .table .table-condensed>
     <thead>
         <tr>
             <th>##
-            <th>Votes
+            <th>#Votes
+            <th>#Stars
             <th>Score
             <th>Entry
     <tbody>
-    $forall (rank, entry, score, votes) <- scores
+    $forall (rank, entry, ratingScore) <- scores
         <tr>
             <td>
                 #{show rank}
             <td>
-                <span .badge>#{show votes}
+                <div .hidden label=#{entryText entry} value=#{rsCount ratingScore}>
+                <span .badge>#{show $ rsCount ratingScore}
             <td>
+                <div .hidden label=#{entryText entry} value=#{rsSum ratingScore}>
+                <span .badge>#{show $ rsSum ratingScore}
+            <td>
+                <div .hidden label=#{entryText entry} value=#{rsScore ratingScore}>
                 <div .progress .progress-striped .progress-success>
-                    <div class="bar" style="width: #{score}%;">
+                    <div class="bar" style="width: #{rsScore ratingScore}%;">
             <td>
                 <span rel="popover" data-content="blah blah TODO" data-original-title=#{entryText entry}>#{entryText entry}

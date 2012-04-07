@@ -2,6 +2,8 @@
 <ul>
     <li>TODO homepage with some content
     <li>TODO ACL, collection admins, collection raters
+    <li>TODO groups of users (score of friends, score by family, score by business team etc)
+    <li>TODO sync with feature requests on a github project
     <li>TODO snapshot of scores
     <li>TODO rating is ok, wha about just allow ordering (priority)?
     <li>TODO tags on entry (sort, filter and adjust rating accordingly)
